@@ -268,6 +268,8 @@ type alias Settings =
     , disabledDayAttributes : List (Attribute Never)
     , previousMonthElement : Element Never
     , nextMonthElement : Element Never
+    , previousYearElement : Element Never
+    , nextYearElement : Element Never
     }
 
 
@@ -294,7 +296,7 @@ defaultSettings =
         ]
     , headerAttributes =
         [ Element.width Element.fill
-        , padding 8
+        , padding 2
         , Font.bold
         ]
     , tableAttributes = [ spacing 4, centerX, centerY ]
@@ -315,9 +317,13 @@ defaultSettings =
         , Background.color (Element.rgb255 0xDD 0xDD 0xDD)
         ]
     , previousMonthElement =
-        Element.text "◄"
+        Element.text "<"
     , nextMonthElement =
-        Element.text "►"
+        Element.text ">"
+    , previousYearElement =
+        Element.text "<<"
+    , nextYearElement =
+        Element.text ">>"
     }
 
 
@@ -456,8 +462,19 @@ pickerHeader { visibleMonth, onChange, settings } =
             , Events.onClick <|
                 onChange <|
                     PickerChanged <|
+                        ChangeMonth (Date.add Date.Months -12 visibleMonth)
+            ]
+          <|
+            extEle settings.previousYearElement
+        , Element.el
+            [ alignLeft
+            , Element.pointer
+            , Events.onClick <|
+                onChange <|
+                    PickerChanged <|
                         ChangeMonth (Date.add Date.Months -1 visibleMonth)
             , TestHelper.previousMonthAttr
+            , Element.paddingEach { top = 0, left = 6, right = 0, bottom = 0 }
             ]
           <|
             extEle settings.previousMonthElement
@@ -472,9 +489,20 @@ pickerHeader { visibleMonth, onChange, settings } =
                     PickerChanged <|
                         ChangeMonth (Date.add Date.Months 1 visibleMonth)
             , TestHelper.nextMonthAttr
+            , Element.paddingEach { top = 0, left = 0, right = 6, bottom = 0 }
             ]
           <|
             extEle settings.nextMonthElement
+        , Element.el
+            [ alignRight
+            , Element.pointer
+            , Events.onClick <|
+                onChange <|
+                    PickerChanged <|
+                        ChangeMonth (Date.add Date.Months 12 visibleMonth)
+            ]
+          <|
+            extEle settings.nextYearElement
         ]
 
 
